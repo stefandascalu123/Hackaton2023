@@ -7,12 +7,12 @@ from psycopg2 import sql
 
 # Replace these values with your PostgreSQL credentials
 DB_HOST = 'localhost'
-DB_NAME = 'postgres'
+DB_NAME = 'population'
 DB_USER = 'postgres'
 DB_PASSWORD = 'Diana@24.08'
 
 # CSV file path
-CSV_FILE = './population.csv'
+CSV_FILE = './worldcities.csv'
 
 # PostgreSQL table name
 TABLE_NAME = 'population'
@@ -32,11 +32,11 @@ cursor = conn.cursor()
 create_table_query = sql.SQL("""
     CREATE TABLE IF NOT EXISTS {} (
         id SERIAL PRIMARY KEY,
-        region VARCHAR(100),
-        year INTEGER,
-        series VARCHAR(1000),
-        value INTEGER,
-        source VARCHAR(1000)
+        city_ascii VARCHAR(1000),
+        lat FLOAT,
+        lng FLOAT,
+        country VARCHAR(1000),
+        population FLOAT
     )
 """).format(sql.Identifier(TABLE_NAME))
 cursor.execute(create_table_query)
@@ -45,16 +45,16 @@ cursor.execute(create_table_query)
 conn.commit()
 
 # Read data from CSV and insert into PostgreSQL
-with open(CSV_FILE, 'r') as file:
+with open(CSV_FILE, 'r',encoding='utf-8') as file:
     reader = csv.reader(file)
     next(reader)  # Skip header row
-    next(reader)  # Skip second row
     for row in reader:
-
+        if row[9] == '':
+            row[9] = '0'
         insert_query = sql.SQL("""
-            INSERT INTO {} (region, year, series, value, source) VALUES (%s, %s, %s, %s, %s)
+            INSERT INTO {} ( city_ascii, lat, lng, country, population) VALUES (%s, %s, %s, %s, %s)
         """).format(sql.Identifier(TABLE_NAME))
-        cursor.execute(insert_query, (row[1], int(row[2]), row[3], int(float (row[4].replace(',', '')) * 100), row[6]))
+        cursor.execute(insert_query, (row[1], float(row[2]), float(row[3]), row[4], float(row[9])))
 
 # Commit the changes and close the connections
 conn.commit()
