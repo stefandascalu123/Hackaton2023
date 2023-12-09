@@ -35,6 +35,37 @@ def create_payload_match(legal_names = [], commercial_names = [], address_txt = 
             }
     return payload
 
+
+def search_competitors(location, category):
+    # operand1 = "{\"attribute\": \"company_category\",\"relation\": \"in\", \"value\": {\"operator\": \"or\",\"operands\": [\"" + '\", \"'.join(str(e) for e in business_tags) + "\"]}}"
+    # operand2 = "{\"attribute\": \"company_location\",\"relation\": \"in\", \"value\": {\"country\": " + json.dumps(location["country"]) + ",\"region\": " + json.dumps(location["region"]) + ",\"city\": " + json.dumps(location["city"]) + "}}"
+    # #payload = "{\"filters\":{\"and\": [" + operand1 + ", " + operand2 + "]}}"
+
+    joan = {
+        "filters": {
+            "and": [
+                {
+                    "attribute": "company_category",
+                    "relation": "equals",
+                    "value": category
+                }
+                ,
+                {
+                    "attribute": "company_location",
+                    "relation": "equals",
+                    "value": {
+                        "country": location["country"],
+                        "region": location["region"],
+                        "city": location["city"]
+                }
+            }
+        ]
+    }
+}
+    response = api_search_request(joan, 10)
+    print(response)
+    return response
+
 def api_match_request(payload):
     # code to make API call to Veridion API
     response = requests.post(match_url, json=payload, headers=header_match)

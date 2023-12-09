@@ -5,34 +5,19 @@ import api_calls
 
 #import modules
 import json
-
-match_payload_empty = {
-                        "legal_names": [],
-                        "commercial_names": [
-                            "Factset"
-                        ],
-                        "address_txt": "Connecticut, United States",
-                        "phone_number": "",
-                        "website": "factset.com"
-                    }
-
-search_payload_empty = {
-                            "filters": {
-                                "and": [
-                                    {
-                                        "attribute": "company_website",
-                                        "relation": "in",
-                                        "value": ["bcg.com", "accenture.com"]
-                                    }
-                                ]
-                            }
-                        }
+import data_analysis
 
 def main():
-    #main function
+    # main function
     payload = api_calls.create_payload_match(commercial_names = ["Factset"], address_txt = "Connecticut, United States", website= "factset.com")
     response = api_calls.api_match_request(payload)
-    print(json.dumps(response, indent=4, sort_keys=True))
+    # response_pretty = json.dumps(response, indent=4, sort_keys=True)
+    # print(response_pretty)
+    locations = data_analysis.get_locations(response)
+    business_tags = data_analysis.get_category(response)
+
+    print(locations[len(locations)-1])
+    competitors = api_calls.search_competitors(locations[2], business_tags)
 
 
 if __name__ == '__main__':
