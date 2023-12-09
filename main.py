@@ -18,7 +18,7 @@ def main():
 
     print(locations[len(locations)-1])
     competitors = api_calls.search_competitors(locations[2], business_tags)
-
+    
 
 if __name__ == '__main__':
     main()
