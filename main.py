@@ -55,7 +55,10 @@ def get_best_matches(company):
         succs.append(0)
         dicts = json.loads(loc)
         comp = api_calls.search_competitors(dicts, business_tags)
-        comps.append(comp["count"])
+        try:
+            comps.append(comp["count"])
+        except:
+            return
         if comp["count"] > max_comp:
             max_comp = comp["count"]
         if dicts["population"] > max_population:
@@ -101,7 +104,9 @@ def get_best_matches(company):
 
 
 def main():
-    
+    open('data.json', 'w').close()
+    open('output.json', 'w').close()
+    open('err', 'w').close()
     while (True):
         if (os.stat("data.json").st_size == 0):
             continue
