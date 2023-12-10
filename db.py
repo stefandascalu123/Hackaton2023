@@ -49,12 +49,11 @@ with open(CSV_FILE, 'r',encoding='utf-8') as file:
     reader = csv.reader(file)
     next(reader)  # Skip header row
     for row in reader:
-        if row[9] == '':
-            row[9] = '0'
-        insert_query = sql.SQL("""
-            INSERT INTO {} ( city_ascii, lat, lng, country, population) VALUES (%s, %s, %s, %s, %s)
-        """).format(sql.Identifier(TABLE_NAME))
-        cursor.execute(insert_query, (row[1], float(row[2]), float(row[3]), row[4], float(row[9])))
+        if row[9] != '' and float(row[9]) > 200000:
+            insert_query = sql.SQL("""
+                INSERT INTO {} ( city_ascii, lat, lng, country, population) VALUES (%s, %s, %s, %s, %s)
+            """).format(sql.Identifier(TABLE_NAME))
+            cursor.execute(insert_query, (row[1], float(row[2]), float(row[3]), row[4], float(row[9])))
 
 # Commit the changes and close the connections
 conn.commit()

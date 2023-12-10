@@ -1,4 +1,66 @@
 import json
+import psycopg2
+import requests
+
+DB_HOST = 'localhost'
+DB_NAME = 'population'
+DB_USER = 'postgres'
+DB_PASSWORD = 'Diana@24.08'
+url = "postgresql://postgres:Diana@24@localhost:5432/population"
+headers = {'Content-Type': 'application/json'}
+
+def get_population(location):
+    conn = psycopg2.connect(
+    dbname=DB_NAME,
+    user=DB_USER,
+    password=DB_PASSWORD,
+    host=DB_HOST
+    )
+    cursor = conn.cursor()
+    cursor.execute("SELECT population FROM population WHERE city_ascii = %s", (location,))
+    rows = cursor.fetchall()
+    #data = json.dumps(rows)
+    #response = requests.post(url, data=data, headers=headers)
+    return rows
+
+def compute_median(locations):
+    lat_med = 0
+    lng_med = 0
+    length = len(locations)
+    for location in locations:
+        if location["latitude"] is None or location["longitude"] is None:
+            length -= 1
+            continue
+        lat_med = lat_med + location["latitude"]
+        lng_med = lng_med + location["longitude"]
+    lat_med /= length
+    lng_med /= length
+    return lat_med, lng_med
+
+def get_possible_locations(lat_med, lng_med, radius):
+    conn = psycopg2.connect(
+    dbname=DB_NAME,
+    user=DB_USER,
+    password=DB_PASSWORD,
+    host=DB_HOST
+    )
+    cursor = conn.cursor()
+    cursor.execute("SELECT city_ascii FROM population WHERE lat <= %s AND lat >= %s AND lng <= %s AND lng >= %s", (lat_med + radius,lat_med - radius, lng_med + radius, lng_med - radius))
+    rows = cursor.fetchall()
+    cursor.execute("SELECT country FROM population WHERE lat <= %s AND lat >= %s AND lng <= %s AND lng >= %s", (lat_med + radius,lat_med - radius, lng_med + radius, lng_med - radius))
+    rows2 = cursor.fetchall()
+    cursor.execute("SELECT population FROM population WHERE lat <= %s AND lat >= %s AND lng <= %s AND lng >= %s", (lat_med + radius,lat_med - radius, lng_med + radius, lng_med - radius))
+    rows3 = cursor.fetchall()
+    jason = []
+    for i in range(len(rows)):
+        json1 = {
+            "city": rows[i][0],
+            "country": rows2[i][0],
+            "population": rows3[i][0]
+        }
+        jason.append(json.dumps(json1))
+
+    return jason
 
 def get_locations(json):
     # code to get locations from json

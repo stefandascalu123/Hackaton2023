@@ -55,15 +55,13 @@ def search_competitors(location, category):
                     "relation": "equals",
                     "value": {
                         "country": location["country"],
-                        "region": location["region"],
-                        "city": location["city"]
+                        "city": location["city"],
                 }
             }
         ]
     }
 }
     response = api_search_request(joan, 10)
-    print(response)
     return response
 
 def api_match_request(payload):
