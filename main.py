@@ -3,6 +3,7 @@
 # import files
 import api_calls
 import os
+import math
 
 #import modules
 import json
@@ -21,13 +22,18 @@ def get_best_matches(company):
     competitors = api_calls.search_competitors(locations[0], business_tags)
     #print(competitors["count"])
     #print(locations[2]["city"])
-    rows = data_analysis.get_population(locations[0]["city"])
-    comp_coef = (competitors["count"]/rows[0][0]) * 1000
+    #rows = data_analysis.get_population(locations[0]["city"])
+    #comp_coef = (competitors["count"]/rows[0][0]) * 1000
     #print(comp_coef)
     lat_med, lng_med = data_analysis.compute_median(locations)
+    print(data_analysis.get_max_distance(locations))
+    if lat_med == 200 and lng_med == 200:
+        with open('err', 'w') as file:
+            json.dump("No locations found", file)
+        return
     #print(data_analysis.compute_median(locations))
     #print(locations)
-    jason = data_analysis.get_possible_locations(lat_med, lng_med, 1)
+    jason = data_analysis.get_possible_locations(lat_med, lng_med, 3)
 
     scores = []
     locs = []
@@ -67,13 +73,20 @@ def get_best_matches(company):
                 aux = locs[i]
                 locs[i] = locs[j]
                 locs[j] = aux
+    output = []
+    for i in range(len(scores)):
+        if i > 4:
+            break
+        #print(scores[i], locs[i])
+        output.append({
+            "score": scores[i],
+            "city": json.loads(locs[i])["city"],
+            "country": json.loads(locs[i])["country"],
+        })
 
-    print(scores[0], locs[0])
-    print(scores[1], locs[1])
-    print(scores[2], locs[2])
-    print(scores[3], locs[3])
-    print(scores[4], locs[4])
-    print(scores[5], locs[5])
+    print(output)
+    with open('output.json', 'w') as file:
+        json.dump(output, file)
 
 
 def main():
@@ -82,6 +95,8 @@ def main():
         if (os.stat("data.json").st_size == 0):
             continue
         with open('data.json') as json_file:
+            open('output.json', 'w').close()
+            open('err', 'w').close()
             print("nu mai intind mana")
             data = json.load(json_file)
             get_best_matches(data)

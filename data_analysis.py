@@ -1,6 +1,7 @@
 import json
 import psycopg2
 import requests
+import math
 
 DB_HOST = 'localhost'
 DB_NAME = 'population'
@@ -33,9 +34,24 @@ def compute_median(locations):
             continue
         lat_med = lat_med + location["latitude"]
         lng_med = lng_med + location["longitude"]
+    if length == 0:
+        return 200, 200
     lat_med /= length
     lng_med /= length
     return lat_med, lng_med
+
+def get_max_distance(locations):
+    max_distance = 0
+    for location in locations:
+        if location["latitude"] is None or location["longitude"] is None:
+            continue
+        for location2 in locations:
+            if location2["latitude"] is None or location2["longitude"] is None:
+                continue
+            distance = math.sqrt((location["latitude"] - location2["latitude"]) * (location["latitude"] - location2["latitude"]) + (location["longitude"] - location2["longitude"]) * (location["longitude"] - location2["longitude"]))
+            if distance > max_distance:
+                max_distance = distance
+    return max_distance
 
 def get_possible_locations(lat_med, lng_med, radius):
     conn = psycopg2.connect(
