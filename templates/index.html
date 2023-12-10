@@ -66,13 +66,50 @@
             display: inline-block;
             position: relative;
         }
+        /* Style for individual result boxes */
+        .result-box {
+            width: 300px;
+            height: 100px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            padding: 10px;
+            display: inline-block;
+            border-radius: 10px; /* Adjust the border-radius value */
+            position: relative; /* Position for score circle */
+        }
+
+        /* Style for country and city names */
+        .country-city {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: -5px;
+        }
+
+        /* Style for the score container */
+        .score-circle {
+            position: absolute;
+            bottom: 5px; /* Adjust positioning */
+            right: 5px; /* Adjust positioning */
+            width: 40px; /* Diameter of the circle */
+            height: 40px; /* Diameter of the circle */
+            border-radius: 50%; /* Make it a circle */
+            background-color: green; /* Background color of the circle */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            border: solid 3px; /* Initial transparent border */
+            border-color: rgb(0, 0, 0); /* Initial transparent border */
+        }
     </style>
 </head>
 <body>
     <div class="search-container">
         <h1>Cute Search</h1>
         <form action="/search" method="post" id="searchForm">
-            <input class="search-box" type="text" name="search1" placeholder="Commertial Company Name...">
+            <input class="search-box" type="text" name="search1" placeholder="Commercial Company Name...">
             <br>
             <div id="secondSearchField">
                 <input class="search-box" type="text" name="search2" placeholder="Website Company...">
@@ -91,6 +128,19 @@
             </div>
             <button class="search-button" type="submit">Search</button>
         </form>
+                <!-- Result boxes -->
+                {% for item in data %}
+                <div class="result-box">
+                    <!-- Circular score container -->
+                    <div class="score-circle">
+                        {{ item.score * 100 }}% <!-- Display the score as a percentage -->
+                    </div>
+                    <div class="country-city">
+                        {{ item.country }} - {{ item.city }}
+                    </div>
+
+                </div>
+                {% endfor %}
     </div>
 
     <script>

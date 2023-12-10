@@ -3,9 +3,18 @@ import json
 import api_calls
 app = Flask(__name__)
 
+# Simulated data for demonstration
+data = [
+    {"score": 0.84, "country": "Country A", "city": "City A"},
+    {"score": 0.66, "country": "Country B", "city": "City B"},
+    {"score": 0.43, "country": "Country C", "city": "City C"},
+    {"score": 0.91, "country": "Country D", "city": "City D"},
+    {"score": 0.75, "country": "Country E", "city": "City E"}
+]
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', data=data)
 
 @app.route('/search', methods=['POST'])
 def search():
