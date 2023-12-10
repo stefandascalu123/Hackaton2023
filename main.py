@@ -25,15 +25,22 @@ def get_best_matches(company):
     #rows = data_analysis.get_population(locations[0]["city"])
     #comp_coef = (competitors["count"]/rows[0][0]) * 1000
     #print(comp_coef)
-    lat_med, lng_med = data_analysis.compute_median(locations)
-    print(data_analysis.get_max_distance(locations))
-    if lat_med == 200 and lng_med == 200:
-        with open('err', 'w') as file:
-            json.dump("No locations found", file)
-        return
-    #print(data_analysis.compute_median(locations))
-    #print(locations)
-    jason = data_analysis.get_possible_locations(lat_med, lng_med, 3)
+    # lat_med, lng_med = data_analysis.compute_median(locations)
+    # if lat_med == 200 and lng_med == 200:
+    #     with open('err', 'w') as file:
+    #         json.dump("No locations found", file)
+    #     return
+    # #print(data_analysis.compute_median(locations))
+    # #print(locations)
+    jason = []
+    if len(locations) <= 5:
+        radius = 7
+    else:
+        radius = 3
+    for location in locations:
+        if location["latitude"] is None or location["longitude"] is None:
+            continue
+        jason = list(set(jason).union(set(data_analysis.get_possible_locations(location["latitude"], location["longitude"], radius))))
 
     scores = []
     locs = []
@@ -85,6 +92,10 @@ def get_best_matches(company):
         })
 
     print(output)
+    if output == []:
+        with open('err', 'w') as file:
+            json.dump("No locations found(no coordinates found)", file)
+        return
     with open('output.json', 'w') as file:
         json.dump(output, file)
 

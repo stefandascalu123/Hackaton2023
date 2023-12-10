@@ -53,6 +53,7 @@ def get_max_distance(locations):
                 max_distance = distance
     return max_distance
 
+
 def get_possible_locations(lat_med, lng_med, radius):
     conn = psycopg2.connect(
     dbname=DB_NAME,
