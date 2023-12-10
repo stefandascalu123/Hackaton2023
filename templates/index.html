@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cute Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+            margin-top: 100px;
+        }
+        .search-container {
+            display: inline-block;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px; /* Change this value to adjust width */
+            margin: 0 auto; /* To center the container */
+            text-align: center;
+        }
+        .search-box {
+            margin-bottom: 10px;
+        }
+        .search-box {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            width: 200px;
+            margin-right: 10px;
+        }
+        .search-button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        /* Adjusted style for wider container */
+        .search-container {
+            /* ... */
+            position: relative; /* Enable positioning */
+        }
+
+        .optional-search {
+            display: none; /* Hide optional search fields by default */
+        }
+
+        /* Additional style for the "plus" button */
+        .toggle-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            padding: 10px;
+            font-size: 10px;
+            cursor: pointer;
+            position: absolute; /* Positioning within the container */
+            top: 5px; /* Adjust top positioning */
+            right: -25px; /* Place the button to the right */
+        }
+
+        /* Adjusted style for the second search box */
+        #secondSearchField {
+            display: inline-block;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <h1>Cute Search</h1>
+        <form action="/search" method="post" id="searchForm">
+            <input class="search-box" type="text" name="search1" placeholder="Commertial Company Name...">
+            <br>
+            <div id="secondSearchField">
+                <input class="search-box" type="text" name="search2" placeholder="Website Company...">
+                <!-- Plus/Minus button for optional search fields -->
+                <button class="toggle-button" type="button" onclick="toggleOptionalSearch()">▼</button>
+            </div>
+            <br>
+            <!-- Additional optional search fields -->
+            <div class="optional-search" id="optionalSearchFields">
+                <input class="search-box" type="text" name="search3" placeholder="Legal Company Name...">
+                <br>
+                <input class="search-box" type="text" name="search4" placeholder="Company Address...">
+                <br>
+                <input class="search-box" type="text" name="search5" placeholder="Phone Number...">
+                <br>
+            </div>
+            <button class="search-button" type="submit">Search</button>
+        </form>
+    </div>
+
+    <script>
+        function toggleOptionalSearch() {
+            var optionalSearchFields = document.getElementById('optionalSearchFields');
+            var toggleButton = document.getElementsByClassName('toggle-button')[0];
+            
+            if (optionalSearchFields.style.display === 'none') {
+                optionalSearchFields.style.display = 'block';
+                toggleButton.textContent = '▲'; // Change button text to minus
+            } else {
+                optionalSearchFields.style.display = 'none';
+                toggleButton.textContent = '▼'; // Change button text to plus
+            }
+        }
+    </script>
+</body>
+</html>

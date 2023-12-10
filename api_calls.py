@@ -81,3 +81,11 @@ def api_search_request(payload, page_size):
     response = requests.post(url, json=payload, headers=header_search)
     ret = json.loads(response.text)
     return ret
+
+def process_search_data():
+    # Read the search_data from the JSON file
+    with open('data.json', 'r') as file:
+        ui_data = json.load(file)
+        # Process the search_data here
+        return ui_data
+
